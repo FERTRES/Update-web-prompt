@@ -2,29 +2,18 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ARA HOSTING – Image Host</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       background: #000000;
       font-family: 'Inter', sans-serif;
       color: #eef2ff;
     }
-
-    .app {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem;
-    }
-
+    .app { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
     .header {
       display: flex;
       justify-content: space-between;
@@ -35,7 +24,6 @@
       border-bottom: 1px solid #3f4043;
       padding-bottom: 1rem;
     }
-
     .logo h1 {
       font-size: 1.8rem;
       font-weight: 700;
@@ -44,28 +32,9 @@
       -webkit-background-clip: text;
       color: transparent;
     }
-
-    .logo p {
-      color: #a4a4a4;
-      font-size: 0.85rem;
-    }
-
-    .badge {
-      background: #052794;
-      padding: 6px 14px;
-      border-radius: 40px;
-      font-size: 0.8rem;
-      color: white;
-    }
-
-    .upload-card {
-      background: #0c0f1c;
-      border-radius: 28px;
-      padding: 2rem;
-      margin-bottom: 2rem;
-      border: 1px solid #3f4043;
-    }
-
+    .logo p { color: #a4a4a4; font-size: 0.85rem; }
+    .badge { background: #052794; padding: 6px 14px; border-radius: 40px; font-size: 0.8rem; color: white; }
+    .upload-card { background: #0c0f1c; border-radius: 28px; padding: 2rem; margin-bottom: 2rem; border: 1px solid #3f4043; }
     .drag-zone {
       border: 2px dashed #3f4043;
       border-radius: 20px;
@@ -75,39 +44,11 @@
       transition: 0.2s;
       background: #05070f;
     }
-
-    .drag-zone.drag-over {
-      border-color: #283dde;
-      background: #0a0e1a;
-    }
-
-    .upload-icon {
-      font-size: 2.8rem;
-      margin-bottom: 0.5rem;
-      color: #a4a4a4;
-    }
-
-    .file-input {
-      display: none;
-    }
-
-    .preview-area {
-      margin-top: 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .preview-img {
-      max-width: 90px;
-      max-height: 90px;
-      border-radius: 12px;
-      border: 1px solid #3f4043;
-      object-fit: cover;
-    }
-
+    .drag-zone.drag-over { border-color: #283dde; background: #0a0e1a; }
+    .upload-icon { font-size: 2.8rem; margin-bottom: 0.5rem; color: #a4a4a4; }
+    .file-input { display: none; }
+    .preview-area { margin-top: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+    .preview-img { max-width: 90px; max-height: 90px; border-radius: 12px; border: 1px solid #3f4043; object-fit: cover; }
     .btn-primary {
       background: #283dde;
       border: none;
@@ -118,83 +59,18 @@
       cursor: pointer;
       transition: 0.2s;
     }
-
-    .btn-primary:hover {
-      background: #2554ea;
-    }
-
-    .btn-primary:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .stats {
-      display: flex;
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
-    }
-
-    .stat-card {
-      background: #0a0d18;
-      border-radius: 20px;
-      padding: 1rem 1.5rem;
-      border: 1px solid #2a2c34;
-      flex: 1;
-    }
-
-    .stat-number {
-      font-size: 2rem;
-      font-weight: 700;
-      color: #2554ea;
-    }
-
-    .gallery-title {
-      font-size: 1.3rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .image-card {
-      background: #0c0f1c;
-      border-radius: 20px;
-      border: 1px solid #2a2c34;
-      overflow: hidden;
-      transition: 0.2s;
-    }
-
-    .image-card:hover {
-      border-color: #283dde;
-      transform: translateY(-2px);
-    }
-
-    .card-img {
-      width: 100%;
-      aspect-ratio: 16/12;
-      object-fit: cover;
-      background: #000;
-      display: block;
-    }
-
-    .card-info {
-      padding: 0.8rem 1rem;
-    }
-
-    .card-name {
-      font-size: 0.75rem;
-      color: #a4a4a4;
-      margin-bottom: 6px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
+    .btn-primary:hover { background: #2554ea; }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+    .stats { display: flex; gap: 1.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
+    .stat-card { background: #0a0d18; border-radius: 20px; padding: 1rem 1.5rem; border: 1px solid #2a2c34; flex: 1; }
+    .stat-number { font-size: 2rem; font-weight: 700; color: #2554ea; }
+    .gallery-title { font-size: 1.3rem; font-weight: 600; margin-bottom: 1rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1.5rem; }
+    .image-card { background: #0c0f1c; border-radius: 20px; border: 1px solid #2a2c34; overflow: hidden; transition: 0.2s; }
+    .image-card:hover { border-color: #283dde; transform: translateY(-2px); }
+    .card-img { width: 100%; aspect-ratio: 16/12; object-fit: cover; background: #000; display: block; }
+    .card-info { padding: 0.8rem 1rem; }
+    .card-name { font-size: 0.75rem; color: #a4a4a4; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .link-btn {
       background: #000000;
       border: 1px solid #283dde;
@@ -204,12 +80,7 @@
       cursor: pointer;
       display: inline-block;
     }
-
-    .link-btn:hover {
-      background: #052794;
-      color: white;
-    }
-
+    .link-btn:hover { background: #052794; color: white; }
     .toast {
       position: fixed;
       bottom: 20px;
@@ -225,20 +96,8 @@
       pointer-events: none;
       z-index: 1000;
     }
-
-    footer {
-      margin-top: 2.5rem;
-      text-align: center;
-      color: #5b5d6b;
-      font-size: 0.75rem;
-      border-top: 1px solid #20222b;
-      padding-top: 1.5rem;
-    }
-
-    @media (max-width: 640px) {
-      .app { padding: 1rem; }
-      .grid { grid-template-columns: 1fr 1fr; }
-    }
+    footer { margin-top: 2.5rem; text-align: center; color: #5b5d6b; font-size: 0.75rem; border-top: 1px solid #20222b; padding-top: 1.5rem; }
+    @media (max-width: 640px) { .app { padding: 1rem; } .grid { grid-template-columns: 1fr 1fr; } }
   </style>
 </head>
 <body>
@@ -283,7 +142,6 @@
 
 <script>
   (function() {
-    // ========== SUPABASE ==========
     const SUPABASE_URL = "https://qawcresnwfmwuuzevjgm.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhd2NyZXNud2Ztd3V1emV2amdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxODk0OTYsImV4cCI6MjA5NDc2NTQ5Nn0.n7yx0_KY1JRiu3P1xEB2CM3UrPWwNP9ybf_8TazpJDo";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -293,25 +151,62 @@
     let currentFile = null;
     let objectUrl = null;
 
-    // ========== helper ==========
     function showMessage(msg, isError = false) {
       const toast = document.getElementById("toastMsg");
       toast.style.backgroundColor = isError ? "#aa2e4e" : "#283dde";
       toast.textContent = msg;
       toast.style.opacity = "1";
-      setTimeout(() => toast.style.opacity = "0", 2500);
+      setTimeout(() => toast.style.opacity = "0", 3000);
     }
 
-    // ========== setup bucket & table ==========
-    async function setupStorage() {
-      const { data: buckets } = await supabaseClient.storage.listBuckets();
+    // CREATE BUCKET
+    async function createBucketIfNotExists() {
+      const { data: buckets, error: listError } = await supabaseClient.storage.listBuckets();
+      if (listError) {
+        console.error("List bucket error:", listError);
+        showMessage("Gagal cek bucket: " + listError.message, true);
+        return false;
+      }
       const exists = buckets?.some(b => b.name === BUCKET);
       if (!exists) {
-        await supabaseClient.storage.createBucket(BUCKET, { public: true });
+        const { error: createError } = await supabaseClient.storage.createBucket(BUCKET, { public: true });
+        if (createError) {
+          console.error("Create bucket error:", createError);
+          showMessage("Gagal buat bucket: " + createError.message, true);
+          return false;
+        }
+        console.log("Bucket created:", BUCKET);
       }
+      return true;
     }
 
-    // ========== ambil semua gambar ==========
+    // CREATE TABLE
+    async function createTableIfNotExists() {
+      const { error: checkError } = await supabaseClient.from(TABLE).select("id").limit(1);
+      if (checkError && checkError.code === "42P01") {
+        const createSQL = `
+          CREATE TABLE gallery (
+            id SERIAL PRIMARY KEY,
+            original_name TEXT,
+            file_path TEXT,
+            size_bytes BIGINT,
+            mime_type TEXT,
+            public_url TEXT,
+            created_at TIMESTAMP DEFAULT now()
+          );
+          ALTER TABLE gallery DISABLE ROW LEVEL SECURITY;
+        `;
+        const { error: execError } = await supabaseClient.rpc('exec_sql', { query: createSQL });
+        if (execError) {
+          console.error("Auto create table failed, please create manually via SQL editor");
+          showMessage("Tabel belum ada, buat manual di SQL Editor Supabase", true);
+          return false;
+        }
+      }
+      return true;
+    }
+
+    // LOAD IMAGES
     async function loadImages() {
       const { data, error } = await supabaseClient
         .from(TABLE)
@@ -341,7 +236,6 @@
         grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:2rem; color:#a4a4a4;">Belum ada gambar. Seret file ke area unggah.</div>';
         return;
       }
-
       grid.innerHTML = images.map(img => `
         <div class="image-card">
           <img class="card-img" src="${img.public_url}" alt="${img.original_name}" loading="lazy">
@@ -368,7 +262,7 @@
       });
     }
 
-    // ========== upload ==========
+    // UPLOAD
     async function uploadImage(file) {
       const ext = file.name.split('.').pop();
       const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${ext}`;
@@ -379,6 +273,7 @@
         .upload(filePath, file, { cacheControl: "3600" });
 
       if (uploadErr) {
+        console.error("Upload error:", uploadErr);
         showMessage("Gagal upload: " + uploadErr.message, true);
         return false;
       }
@@ -394,49 +289,36 @@
       }]);
 
       if (dbErr) {
-        console.error(dbErr);
+        console.error("DB insert error:", dbErr);
         showMessage("Gambar tersimpan, tapi metadata gagal", true);
       }
       return true;
     }
 
-    // ========== UI DRAG & DROP (paling stabil) ==========
+    // DRAG & DROP UI
     const dragZone = document.getElementById("dragZone");
     const fileInput = document.getElementById("fileInput");
     const previewArea = document.getElementById("previewArea");
     const previewImg = document.getElementById("previewImg");
     const uploadBtn = document.getElementById("uploadBtn");
 
-    if (!dragZone) {
-      console.error("dragZone element not found");
-      return;
-    }
-
-    // klik untuk pilih file
     dragZone.addEventListener("click", (e) => {
-      if (e.target === uploadBtn || (uploadBtn && uploadBtn.contains(e.target))) return;
+      if (uploadBtn && uploadBtn.contains(e.target)) return;
       fileInput.click();
     });
 
-    // drag over
     dragZone.addEventListener("dragover", (e) => {
       e.preventDefault();
-      e.stopPropagation();
       dragZone.classList.add("drag-over");
     });
 
-    dragZone.addEventListener("dragleave", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
+    dragZone.addEventListener("dragleave", () => {
       dragZone.classList.remove("drag-over");
     });
 
-    // drag drop
     dragZone.addEventListener("drop", (e) => {
       e.preventDefault();
-      e.stopPropagation();
       dragZone.classList.remove("drag-over");
-      
       const files = e.dataTransfer.files;
       if (files.length > 0 && files[0].type.startsWith("image/")) {
         handleFile(files[0]);
@@ -446,9 +328,7 @@
     });
 
     fileInput.addEventListener("change", (e) => {
-      if (e.target.files.length > 0) {
-        handleFile(e.target.files[0]);
-      }
+      if (e.target.files.length > 0) handleFile(e.target.files[0]);
     });
 
     function handleFile(file) {
@@ -478,17 +358,14 @@
       }
     });
 
-    // ========== INIT ==========
+    // INIT
     (async () => {
-      try {
-        await setupStorage();
-        await renderGallery();
-      } catch (err) {
-        console.error(err);
-        showMessage("Gagal konek ke Supabase, cek console", true);
-      }
+      const bucketOk = await createBucketIfNotExists();
+      if (!bucketOk) return;
+      await createTableIfNotExists();
+      await renderGallery();
     })();
   })();
 </script>
 </body>
-</html>
+  </html>
