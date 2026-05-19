@@ -1,689 +1,499 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>LIB PROMPT | Mixed Color Library</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>ARA HOSTING – Modern Image Host</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            background: linear-gradient(145deg, #0a0f2a 0%, #1a1a3a 50%, #0f2b3d 100%);
-            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-            color: #e2e8f0;
-            min-height: 100vh;
-            height: 100vh;
-            overflow: hidden;
-        }
+    body {
+      background: #000000;
+      font-family: 'Inter', sans-serif;
+      color: #eef2ff;
+      line-height: 1.5;
+    }
 
-        /* Slide-out Menu - Mixed Colors */
-        .slide-menu {
-            position: fixed;
-            top: 0;
-            left: -560px;
-            width: 560px;
-            height: 100%;
-            background: linear-gradient(145deg, rgba(15, 23, 42, 0.98), rgba(88, 28, 135, 0.95));
-            backdrop-filter: blur(20px);
-            border-right: 1px solid rgba(168, 85, 247, 0.4);
-            z-index: 1100;
-            transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            flex-direction: column;
-            padding: 1.8rem;
-            box-shadow: 8px 0 32px rgba(0,0,0,0.5);
-            overflow-y: auto;
-        }
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #000000;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #283dde;
+      border-radius: 20px;
+    }
 
-        .slide-menu.open {
-            left: 0;
-        }
+    .app {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
 
-        .menu-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(168, 85, 247, 0.4);
-            padding-bottom: 1rem;
-            margin-bottom: 1.8rem;
-        }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+      border-bottom: 1px solid #3f4043;
+      padding-bottom: 1.2rem;
+    }
 
-        .menu-header h3 {
-            font-weight: 600;
-            font-size: 1.3rem;
-            background: linear-gradient(135deg, #22d3ee, #a855f7);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
+    .logo h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #283dde, #2554ea);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      letter-spacing: -0.3px;
+    }
 
-        .close-menu {
-            background: none;
-            border: none;
-            font-size: 1.6rem;
-            cursor: pointer;
-            color: #a78bfa;
-        }
+    .logo p {
+      color: #a4a4a4;
+      font-size: 0.85rem;
+      margin-top: 4px;
+    }
 
-        .login-card {
-            background: rgba(15, 23, 42, 0.6);
-            border-radius: 24px;
-            padding: 1.5rem;
-            border: 1px solid rgba(168, 85, 247, 0.3);
-            backdrop-filter: blur(4px);
-        }
+    .badge {
+      background: #052794;
+      padding: 6px 14px;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: white;
+    }
 
-        .login-card h4 {
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            color: #a855f7;
-        }
+    .upload-card {
+      background: #0c0f1c;
+      border-radius: 28px;
+      padding: 2rem;
+      margin-bottom: 2.8rem;
+      border: 1px solid #3f4043;
+      box-shadow: 0 20px 35px -12px rgba(0,0,0,0.5);
+    }
 
-        .login-card input {
-            width: 100%;
-            background: rgba(8, 32, 50, 0.6);
-            border: 1px solid #334155;
-            padding: 0.7rem 1rem;
-            border-radius: 30px;
-            margin-bottom: 0.8rem;
-            color: #e0f2fe;
-            font-size: 0.85rem;
-            outline: none;
-        }
+    .drag-zone {
+      border: 2px dashed #3f4043;
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #05070f;
+    }
 
-        .login-card input:focus {
-            border-color: #a855f7;
-            box-shadow: 0 0 0 2px rgba(168,85,247,0.2);
-        }
+    .drag-zone:hover {
+      border-color: #283dde;
+      background: #0a0e1a;
+    }
 
-        .login-card button {
-            background: linear-gradient(135deg, #0284c7, #a855f7);
-            width: 100%;
-            border: none;
-            padding: 0.7rem;
-            border-radius: 30px;
-            font-weight: 600;
-            color: white;
-            cursor: pointer;
-        }
+    .drag-zone.active {
+      border-color: #2554ea;
+      background: #0f1428;
+    }
 
-        .admin-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
+    .upload-icon {
+      font-size: 3rem;
+      margin-bottom: 0.8rem;
+      color: #a4a4a4;
+    }
 
-        .admin-panel input, .admin-panel textarea, .admin-panel select {
-            background: rgba(8, 32, 50, 0.6);
-            border: 1px solid #4a5568;
-            padding: 0.7rem 1rem;
-            border-radius: 16px;
-            color: #e0f2fe;
-            font-size: 0.85rem;
-            outline: none;
-        }
+    .file-input {
+      display: none;
+    }
 
-        .admin-panel textarea {
-            resize: vertical;
-            min-height: 400px;
-            font-family: monospace;
-            font-size: 0.8rem;
-            line-height: 1.5;
-        }
+    .upload-preview {
+      margin-top: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
 
-        .cat-check-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin: 0.3rem 0;
-            max-height: 120px;
-            overflow-y: auto;
-        }
+    .preview-img {
+      max-width: 90px;
+      max-height: 90px;
+      border-radius: 12px;
+      border: 1px solid #3f4043;
+      object-fit: cover;
+    }
 
-        .cat-chip {
-            background: linear-gradient(135deg, #1e293b, #2d1b69);
-            padding: 0.3rem 0.8rem;
-            border-radius: 30px;
-            font-size: 0.7rem;
-            cursor: pointer;
-            border: 1px solid #a855f7;
-        }
+    .btn-primary {
+      background: #283dde;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 40px;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+      font-size: 0.9rem;
+      box-shadow: 0 2px 8px rgba(40,61,222,0.2);
+    }
 
-        .cat-chip.selected {
-            background: linear-gradient(135deg, #0284c7, #a855f7);
-            color: white;
-        }
+    .btn-primary:hover {
+      background: #2554ea;
+      transform: scale(1.01);
+    }
 
-        .admin-panel button {
-            background: linear-gradient(135deg, #0284c7, #a855f7);
-            border: none;
-            padding: 0.7rem;
-            border-radius: 30px;
-            font-weight: bold;
-            cursor: pointer;
-            color: white;
-        }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #3f4043;
+      padding: 10px 22px;
+      border-radius: 40px;
+      color: #eef2ff;
+      cursor: pointer;
+    }
 
-        .logout-btn {
-            background: linear-gradient(135deg, #475569, #4c1d95) !important;
-        }
+    .btn-outline:hover {
+      border-color: #283dde;
+      color: white;
+    }
 
-        .char-counter {
-            font-size: 0.7rem;
-            color: #c084fc;
-            text-align: right;
-            margin-top: -0.3rem;
-            margin-bottom: 0.3rem;
-            font-weight: bold;
-        }
+    .stats-row {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
 
-        /* Main App - Mixed Colors */
-        .app-container {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
+    .stat-card {
+      background: #0a0d18;
+      border-radius: 24px;
+      padding: 1rem 1.6rem;
+      border: 1px solid #2a2c34;
+      flex: 1;
+      min-width: 130px;
+    }
 
-        .top-bar {
-            background: linear-gradient(90deg, #1a1a3a 0%, #0f2b3d 50%, #1e1b4b 100%);
-            backdrop-filter: blur(12px);
-            padding: 0.8rem 1.8rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid rgba(168, 85, 247, 0.3);
-        }
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #2554ea;
+    }
 
-        .menu-icon {
-            background: none;
-            border: none;
-            color: #c084fc;
-            font-size: 1.6rem;
-            cursor: pointer;
-        }
+    .gallery-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
 
-        .logo {
-            font-weight: 800;
-            font-size: 1.5rem;
-            letter-spacing: 2px;
-            background: linear-gradient(135deg, #22d3ee, #c084fc, #f472b6);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 1.5rem;
+      margin-top: 0.5rem;
+    }
 
-        .search-box {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid #a855f7;
-            border-radius: 30px;
-            padding: 0.4rem 1rem;
-            width: 240px;
-            color: #e0f2fe;
-            outline: none;
-        }
+    .image-card {
+      background: #0c0f1c;
+      border-radius: 20px;
+      border: 1px solid #2a2c34;
+      overflow: hidden;
+      transition: 0.2s;
+    }
 
-        .stats-bar {
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(168, 85, 247, 0.3);
-            background: linear-gradient(90deg, rgba(10, 15, 42, 0.5), rgba(30, 27, 75, 0.5));
-        }
+    .image-card:hover {
+      border-color: #283dde;
+      transform: translateY(-3px);
+    }
 
-        .total-badge {
-            background: linear-gradient(135deg, #0284c7, #a855f7);
-            padding: 0.3rem 1rem;
-            border-radius: 30px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
+    .card-img {
+      width: 100%;
+      aspect-ratio: 16/12;
+      object-fit: cover;
+      background: #000;
+      display: block;
+    }
 
-        .filter-bar {
-            padding: 1rem 2rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.6rem;
-            border-bottom: 1px solid rgba(168, 85, 247, 0.3);
-            background: rgba(15, 23, 42, 0.4);
-        }
+    .card-info {
+      padding: 0.9rem 1rem 1rem;
+    }
 
-        .filter-chip {
-            background: linear-gradient(135deg, #1e293b, #2d1b69);
-            padding: 0.3rem 1.2rem;
-            border-radius: 30px;
-            font-size: 0.75rem;
-            cursor: pointer;
-            border: 1px solid #a855f7;
-        }
+    .card-title {
+      font-weight: 500;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #a4a4a4;
+      margin-bottom: 6px;
+    }
 
-        .filter-chip.active {
-            background: linear-gradient(135deg, #0284c7, #a855f7);
-            color: white;
-        }
+    .link-badge {
+      background: #000000;
+      border: 1px solid #283dde;
+      border-radius: 40px;
+      padding: 4px 10px;
+      font-size: 0.7rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
 
-        .prompt-grid {
-            flex: 1;
-            overflow-y: auto;
-            padding: 1.5rem 2rem;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
-            gap: 1rem;
-        }
+    .link-badge:hover {
+      background: #052794;
+      color: white;
+    }
 
-        .prompt-card {
-            background: linear-gradient(145deg, #0f172a, #1e1b4b);
-            border: 1px solid rgba(168, 85, 247, 0.4);
-            border-radius: 20px;
-            padding: 1rem;
-            transition: 0.2s;
-        }
+    .toast-msg {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #283dde;
+      color: white;
+      padding: 10px 22px;
+      border-radius: 60px;
+      font-size: 0.8rem;
+      z-index: 1000;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
 
-        .prompt-card:hover {
-            border-color: #c084fc;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(168,85,247,0.2);
-        }
+    footer {
+      margin-top: 3rem;
+      text-align: center;
+      color: #5b5d6b;
+      font-size: 0.75rem;
+      border-top: 1px solid #20222b;
+      padding-top: 2rem;
+    }
 
-        .card-title {
-            font-weight: 700;
-            font-size: 1rem;
-            margin-bottom: 0.3rem;
-            background: linear-gradient(135deg, #22d3ee, #c084fc);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .card-cats {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.3rem;
-            margin: 0.5rem 0;
-        }
-
-        .cat-tag {
-            background: linear-gradient(135deg, #1e293b, #2d1b69);
-            font-size: 0.6rem;
-            padding: 0.2rem 0.6rem;
-            border-radius: 20px;
-            border: 1px solid #a855f7;
-        }
-
-        .card-length {
-            font-size: 0.65rem;
-            color: #22d3ee;
-            margin-bottom: 0.5rem;
-            font-weight: bold;
-        }
-
-        .full-preview-container {
-            background: rgba(8, 32, 50, 0.6);
-            border-radius: 12px;
-            padding: 0.6rem;
-            margin: 0.5rem 0;
-            max-height: 180px;
-            overflow-y: auto;
-            font-family: monospace;
-            font-size: 0.7rem;
-            line-height: 1.4;
-            white-space: pre-wrap;
-            word-break: break-word;
-            color: #a5f3fc;
-            border: 1px solid rgba(168,85,247,0.2);
-        }
-
-        .card-actions {
-            display: flex;
-            gap: 0.5rem;
-            justify-content: flex-end;
-            margin-top: 0.5rem;
-        }
-
-        .card-actions button {
-            background: linear-gradient(135deg, #1e293b, #2d1b69);
-            border: 1px solid #a855f7;
-            padding: 0.3rem 1rem;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            cursor: pointer;
-            color: #c084fc;
-        }
-
-        .copy-all-btn {
-            background: linear-gradient(135deg, #0284c7, #a855f7) !important;
-            color: white !important;
-            border: none !important;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 0.5rem;
-            font-size: 0.65rem;
-            background: linear-gradient(90deg, #1a1a3a, #0f2b3d);
-            color: #a78bfa;
-        }
-
-        @media (max-width: 640px) {
-            .prompt-grid { grid-template-columns: 1fr; padding: 1rem; }
-            .filter-bar { padding: 0.8rem; }
-            .stats-bar { padding: 0.8rem; }
-            .slide-menu { width: 100%; left: -100%; }
-        }
-
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #1e1b4b; }
-        ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #0284c7, #a855f7); border-radius: 10px; }
-    </style>
+    @media (max-width: 640px) {
+      .app { padding: 1.5rem; }
+      .grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
 </head>
 <body>
 
-<div class="slide-menu" id="slideMenu">
-    <div class="menu-header">
-        <h3>𝗔𝗗𝗠𝗜𝗡 𝗔𝗖𝗖𝗘𝗦𝗦</h3>
-        <button class="close-menu" id="closeMenuBtn">X</button>
+<div class="app">
+  <div class="header">
+    <div class="logo">
+      <h1>ARA HOSTING</h1>
+      <p>unggah gambar · link instan · modern</p>
     </div>
-    <div id="loginSection">
-        <div class="login-card">
-            <h4>LOGIN</h4>
-            <input type="text" id="loginSecret" placeholder="Admin Key">
-            <input type="password" id="loginPass" placeholder="Password">
-            <button id="doLoginBtn">LOGIN</button>
-        </div>
+    <div class="badge">powered by Supabase</div>
+  </div>
+
+  <div class="upload-card">
+    <div class="drag-zone" id="dragZone">
+      <div class="upload-icon">∆</div>
+      <p style="margin-bottom: 8px;">Seret & lepas gambar di sini</p>
+      <p style="color:#a4a4a4; font-size:0.8rem;">atau klik untuk pilih file</p>
+      <input type="file" id="fileInput" class="file-input" accept="image/*">
+      <div class="upload-preview" id="previewContainer" style="display: none;">
+        <img id="previewImg" class="preview-img" alt="preview">
+        <button id="uploadBtn" class="btn-primary">Unggah sekarang</button>
+      </div>
     </div>
-    <div id="adminSection" style="display: none;">
-        <div class="admin-panel">
-            <input type="text" id="newTitle" placeholder="Prompt Title">
-            <textarea id="newContent" rows="14" placeholder="Masukkan FULL PROMPT disini... PASTIKAN TIDAK TERPOTONG. Teks panjang hingga 100.000 karakter didukung."></textarea>
-            <div class="char-counter" id="charCount">0 characters</div>
-            <div class="cat-check-group" id="catMultiGroup"></div>
-            <button id="submitPromptBtn">SAVE</button>
-            <button id="logoutAdminBtn" class="logout-btn">LOGOUT</button>
-        </div>
-    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-number" id="totalImages">0</div><div>gambar tersimpan</div></div>
+    <div class="stat-card"><div class="stat-number" id="todayUploads">0</div><div>upload hari ini</div></div>
+    <div class="stat-card"><div class="stat-number">hosting</div><div>gratis permanen</div></div>
+  </div>
+
+  <div class="gallery-title">
+    <span>Galeri publik</span>
+    <span style="font-size:0.7rem; background:#05279420; padding:2px 8px; border-radius:40px;">auto update</span>
+  </div>
+  <div id="galleryGrid" class="grid">
+    <div style="grid-column:1/-1; text-align:center; padding:3rem; color:#6e6f7e;">memuat gambar...</div>
+  </div>
+  <footer>
+    ARA HOSTING – modern image hosting • file permanen hingga dihapus via dashboard
+  </footer>
 </div>
 
-<div class="app-container">
-    <div class="top-bar">
-        <button class="menu-icon" id="menuBtn">☰</button>
-        <div class="logo">𝐋𝐈𝐁𝐑𝐀 𝐏𝐑𝐎𝐌𝐏𝐓</div>
-        <input type="text" id="searchInput" class="search-box" placeholder="Search...">
-    </div>
-    <div class="stats-bar">
-        <div class="total-badge" id="totalCount">0 PROMPTS</div>
-        <div style="font-size:0.7rem;"></div>
-    </div>
-    <div class="filter-bar" id="filterBar"></div>
-    <div class="prompt-grid" id="promptGrid">Loading prompts...</div>
-    <div class="footer"></div>
-</div>
+<div id="toastMsg" class="toast-msg">link disalin</div>
 
 <script>
-    // SUPABASE CONFIG
-    const SUPABASE_URL = 'https://ovkrfytlcojgyqhbvxmv.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im92a3JmeXRsY29qZ3lxaGJ2eG12Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NDkwNzIsImV4cCI6MjA5MzEyNTA3Mn0.dB8OAf1CBfS2UNb0HLnq0uQnB9nKLc4BnJFJ7TN1pCU';
-    
-    const ADMIN_KEY = 'Ushgr7726537##8277hsuywffwyygahgt5s7276w';
-    const ADMIN_PASS = '52aj7wh2hw772hvs7ahqkw';
-    
-    const ALL_CATEGORIES = ['deepseek', 'gemini', 'z ai', 'groq', 'qween', 'perplexity', 'dola', 'chatgpt', 'cloude'];
-    
-    let currentPrompts = [];
-    let activeFilters = [];
-    let searchTerm = '';
-    let isAdmin = false;
-    let selectedCategories = [];
+  const SUPABASE_URL = "https://qawcresnwfmwuuzevjgm.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhd2NyZXNud2Ztd3V1emV2amdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxODk0OTYsImV4cCI6MjA5NDc2NTQ5Nn0.n7yx0_KY1JRiu3P1xEB2CM3UrPWwNP9ybf_8TazpJDo";
+  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const BUCKET_NAME = 'ara_images';
+  const TABLE_NAME = 'gallery';
 
-    const slideMenu = document.getElementById('slideMenu');
-    const menuBtn = document.getElementById('menuBtn');
-    const closeMenuBtn = document.getElementById('closeMenuBtn');
-    const loginSection = document.getElementById('loginSection');
-    const adminSection = document.getElementById('adminSection');
-    const promptGrid = document.getElementById('promptGrid');
-    const searchInput = document.getElementById('searchInput');
-    const filterBar = document.getElementById('filterBar');
-    const totalCountSpan = document.getElementById('totalCount');
+  let currentFile = null;
+  let previewUrl = null;
 
-    menuBtn.onclick = () => slideMenu.classList.add('open');
-    closeMenuBtn.onclick = () => slideMenu.classList.remove('open');
+  function showToast(msg, isError = false) {
+    const toast = document.getElementById('toastMsg');
+    toast.style.backgroundColor = isError ? '#aa2e4e' : '#283dde';
+    toast.textContent = msg;
+    toast.style.opacity = '1';
+    setTimeout(() => toast.style.opacity = '0', 2400);
+  }
 
-    function renderFilters() {
-        filterBar.innerHTML = '<div class="filter-chip" data-filter="all">ALL</div>';
-        ALL_CATEGORIES.forEach(cat => {
-            const chip = document.createElement('div');
-            chip.className = 'filter-chip';
-            if (activeFilters.includes(cat)) chip.classList.add('active');
-            chip.innerText = cat.toUpperCase();
-            chip.dataset.filter = cat;
-            chip.onclick = () => toggleFilter(cat);
-            filterBar.appendChild(chip);
-        });
-        const allChip = filterBar.children[0];
-        allChip.onclick = () => toggleFilter('all');
-        if (activeFilters.length === 0) allChip.classList.add('active');
-        else allChip.classList.remove('active');
+  async function ensureBucketAndTable() {
+    const { data: buckets } = await supabase.storage.listBuckets();
+    const bucketExists = buckets?.some(b => b.name === BUCKET_NAME);
+    if (!bucketExists) {
+      await supabase.storage.createBucket(BUCKET_NAME, { public: true });
     }
+  }
 
-    function toggleFilter(cat) {
-        if (cat === 'all') activeFilters = [];
-        else {
-            const idx = activeFilters.indexOf(cat);
-            if (idx === -1) activeFilters.push(cat);
-            else activeFilters.splice(idx, 1);
-        }
-        renderFilters();
-        renderPrompts();
+  async function fetchGallery() {
+    const { data: images, error } = await supabase
+      .from(TABLE_NAME)
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) return [];
+    for (let img of images) {
+      const { data: { publicUrl } } = supabase.storage.from(BUCKET_NAME).getPublicUrl(img.file_path);
+      img.public_url = publicUrl;
     }
+    return images || [];
+  }
 
-    async function fetchPrompts() {
-        try {
-            const res = await fetch(`${SUPABASE_URL}/rest/v1/prompts?select=*&order=id.desc`, {
-                headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
-            });
-            currentPrompts = await res.json();
-            totalCountSpan.innerText = currentPrompts.length + ' PROMPTS';
-            renderPrompts();
-        } catch(e) {
-            promptGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center;">Gagal load prompts</div>';
-        }
+  async function renderGallery() {
+    const images = await fetchGallery();
+    const total = images.length;
+    document.getElementById('totalImages').innerText = total;
+    const today = new Date().toISOString().slice(0,10);
+    const todayUploads = images.filter(img => img.created_at?.startsWith(today)).length;
+    document.getElementById('todayUploads').innerText = todayUploads;
+
+    const grid = document.getElementById('galleryGrid');
+    if (!images.length) {
+      grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:2rem; color:#6a6c7e;">belum ada gambar, unggah foto pertama</div>';
+      return;
     }
+    grid.innerHTML = images.map(img => `
+      <div class="image-card">
+        <img class="card-img" src="${img.public_url}" alt="${img.original_name}" loading="lazy" />
+        <div class="card-info">
+          <div class="card-title">${escapeHtml(img.original_name.substring(0, 28))}</div>
+          <div class="link-badge" onclick="copyToClipboard('${img.public_url}')">salin link</div>
+        </div>
+      </div>
+    `).join('');
+  }
 
-    function renderPrompts() {
-        let filtered = currentPrompts.filter(p => {
-            const textMatch = (p.title + p.content).toLowerCase().includes(searchTerm.toLowerCase());
-            let catMatch = true;
-            if (activeFilters.length) {
-                const promptCats = p.category ? p.category.split(',') : [];
-                catMatch = activeFilters.some(ac => promptCats.includes(ac));
-            }
-            return textMatch && catMatch;
-        });
-        if (!filtered.length) {
-            promptGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:2rem;">Tidak ada prompt</div>';
-            return;
-        }
-        promptGrid.innerHTML = filtered.map(p => {
-            const cats = p.category ? p.category.split(',') : [];
-            const fullContent = p.content || '';
-            const charLen = fullContent.length;
-            const previewText = fullContent.length > 350 ? fullContent.substring(0, 350) + '...' : fullContent;
-            return `
-                <div class="prompt-card">
-                    <div class="card-title">${escapeHtml(p.title)}</div>
-                    <div class="card-cats">${cats.map(c => `<span class="cat-tag">${c}</span>`).join('')}</div>
-                    <div class="card-length">Total: ${charLen} karakter (full teks tersimpan)</div>
-                    <div class="full-preview-container">
-                        <strong>Preview:</strong><br>${escapeHtml(previewText)}
-                        ${fullContent.length > 350 ? '<br><span style="color:#c084fc;">[klik COPY FULL untuk teks lengkap]</span>' : ''}
-                    </div>
-                    <div class="card-actions">
-                        <button class="copy-full-btn copy-all-btn" data-fullcontent="${escapeForAttribute(fullContent)}">COPY PROMPT</button>
-                        <button class="view-full-btn" data-fullcontent="${escapeForAttribute(fullContent)}" data-title="${escapeHtml(p.title)}">VIEW FULL</button>
-                        ${isAdmin ? `<button class="delete-prompt" data-id="${p.id}" style="color:#f87171;">HAPUS</button>` : ''}
-                    </div>
-                </div>
-            `;
-        }).join('');
-        
-        // COPY FULL TEXT - TIDAK TERPOTONG
-        document.querySelectorAll('.copy-full-btn').forEach(btn => {
-            btn.onclick = (e) => {
-                const fullText = btn.getAttribute('data-fullcontent');
-                if (fullText && fullText.length > 0) {
-                    navigator.clipboard.writeText(fullText).then(() => {
-                        const originalText = btn.innerText;
-                        btn.innerText = 'COPIED!';
-                        setTimeout(() => btn.innerText = originalText, 1500);
-                        alert(`Full prompt copied! Length: ${fullText.length} characters`);
-                    }).catch(() => alert('Copy gagal, coba klik View Full lalu copy manual'));
-                } else {
-                    alert('Tidak ada konten untuk dicopy');
-                }
-            };
-        });
-        
-        document.querySelectorAll('.view-full-btn').forEach(btn => {
-            btn.onclick = () => {
-                const title = btn.getAttribute('data-title');
-                const fullText = btn.getAttribute('data-fullcontent');
-                const charCount = fullText ? fullText.length : 0;
-                const previewMsg = fullText ? fullText.substring(0, 500) + (fullText.length > 500 ? '...' : '') : 'Kosong';
-                alert(`Title: ${title}\n\nTotal Length: ${charCount} characters\n\n===== FULL PROMPT (AWAL) =====\n\n${previewMsg}\n\n(Silakan copy dari tombol COPY FULL untuk keseluruhan teks)`);
-            };
-        });
-        
-        if (isAdmin) {
-            document.querySelectorAll('.delete-prompt').forEach(btn => {
-                btn.onclick = async () => {
-                    if (confirm('Hapus prompt ini?')) {
-                        const id = btn.getAttribute('data-id');
-                        await fetch(`${SUPABASE_URL}/rest/v1/prompts?id=eq.${id}`, {
-                            method: 'DELETE',
-                            headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
-                        });
-                        fetchPrompts();
-                    }
-                };
-            });
-        }
+  window.copyToClipboard = (url) => {
+    navigator.clipboard.writeText(url);
+    showToast(`link disalin: ${url.substring(0, 45)}...`);
+  };
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    });
+  }
+
+  async function uploadImage(file) {
+    if (!file) return false;
+    const ext = file.name.split('.').pop();
+    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 10)}.${ext}`;
+    const filePath = `public/${fileName}`;
+
+    const { error: uploadErr } = await supabase.storage
+      .from(BUCKET_NAME)
+      .upload(filePath, file, { cacheControl: '3600', upsert: false });
+    if (uploadErr) {
+      showToast(`gagal upload: ${uploadErr.message}`, true);
+      return false;
     }
+    const { data: { publicUrl } } = supabase.storage.from(BUCKET_NAME).getPublicUrl(filePath);
+    const { error: dbError } = await supabase
+      .from(TABLE_NAME)
+      .insert([{
+        original_name: file.name,
+        file_path: filePath,
+        size_bytes: file.size,
+        mime_type: file.type,
+        public_url: publicUrl
+      }]);
+    if (dbError) console.error(dbError);
+    return true;
+  }
 
-    function escapeHtml(str) { 
-        if (!str) return '';
-        return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); 
+  const dragZone = document.getElementById('dragZone');
+  const fileInput = document.getElementById('fileInput');
+  const previewContainer = document.getElementById('previewContainer');
+  const previewImg = document.getElementById('previewImg');
+  const uploadBtn = document.getElementById('uploadBtn');
+
+  dragZone.addEventListener('click', () => fileInput.click());
+  dragZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dragZone.classList.add('active');
+  });
+  dragZone.addEventListener('dragleave', () => dragZone.classList.remove('active'));
+  dragZone.addEventListener('drop', async (e) => {
+    e.preventDefault();
+    dragZone.classList.remove('active');
+    const files = e.dataTransfer.files;
+    if (files.length && files[0].type.startsWith('image/')) {
+      handleFile(files[0]);
+    } else {
+      showToast('hanya file gambar yang didukung', true);
     }
-    
-    function escapeForAttribute(str) {
-        if (!str) return '';
-        return str.replace(/&/g, '&amp;')
-                  .replace(/</g, '&lt;')
-                  .replace(/>/g, '&gt;')
-                  .replace(/"/g, '&quot;')
-                  .replace(/'/g, '&#39;');
+  });
+
+  fileInput.addEventListener('change', (e) => {
+    if (e.target.files.length) handleFile(e.target.files[0]);
+  });
+
+  function handleFile(file) {
+    currentFile = file;
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    previewUrl = URL.createObjectURL(file);
+    previewImg.src = previewUrl;
+    previewContainer.style.display = 'flex';
+    dragZone.style.borderColor = '#283dde';
+  }
+
+  uploadBtn.addEventListener('click', async () => {
+    if (!currentFile) return;
+    uploadBtn.disabled = true;
+    uploadBtn.innerText = 'mengunggah...';
+    const ok = await uploadImage(currentFile);
+    uploadBtn.disabled = false;
+    uploadBtn.innerText = 'Unggah sekarang';
+    if (ok) {
+      showToast('gambar berhasil dihosting');
+      currentFile = null;
+      previewContainer.style.display = 'none';
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      fileInput.value = '';
+      await renderGallery();
+    } else {
+      showToast('upload gagal, coba lagi', true);
     }
+  });
 
-    function buildCategorySelectors() {
-        const container = document.getElementById('catMultiGroup');
-        if (!container) return;
-        container.innerHTML = '';
-        selectedCategories = [];
-        ALL_CATEGORIES.forEach(cat => {
-            const div = document.createElement('div');
-            div.className = 'cat-chip';
-            div.innerText = cat;
-            div.onclick = (e) => {
-                e.stopPropagation();
-                const idx = selectedCategories.indexOf(cat);
-                if (idx === -1) {
-                    selectedCategories.push(cat);
-                    div.classList.add('selected');
-                } else {
-                    selectedCategories.splice(idx, 1);
-                    div.classList.remove('selected');
-                }
-            };
-            container.appendChild(div);
-        });
-    }
+  (async () => {
+    await ensureBucketAndTable();
+    await renderGallery();
+  })();
 
-    async function addPrompt(title, content, categories) {
-        const catStr = categories.join(',');
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/prompts`, {
-            method: 'POST',
-            headers: {
-                'apikey': SUPABASE_ANON_KEY,
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ title, content, category: catStr })
-        });
-        if (!response.ok) {
-            const err = await response.text();
-            console.error('Supabase error:', err);
-            return false;
-        }
-        return true;
-    }
-
-    // LOGIN
-    document.getElementById('doLoginBtn').onclick = () => {
-        const key = document.getElementById('loginSecret').value;
-        const pass = document.getElementById('loginPass').value;
-        if (key === ADMIN_KEY && pass === ADMIN_PASS) {
-            isAdmin = true;
-            loginSection.style.display = 'none';
-            adminSection.style.display = 'flex';
-            buildCategorySelectors();
-            
-            const contentTextarea = document.getElementById('newContent');
-            const charSpan = document.getElementById('charCount');
-            const updateCharCount = () => {
-                const len = contentTextarea.value.length;
-                charSpan.innerHTML = len + ' characters (full text akan tersimpan semua)';
-                if (len > 50000) charSpan.style.color = '#fde047';
-                else charSpan.style.color = '#c084fc';
-            };
-            contentTextarea.addEventListener('input', updateCharCount);
-            updateCharCount();
-            
-            document.getElementById('submitPromptBtn').onclick = async () => {
-                const title = document.getElementById('newTitle').value.trim();
-                const content = contentTextarea.value;
-                if (!title || !content) { alert('Title dan content wajib diisi'); return; }
-                if (selectedCategories.length === 0) { alert('Pilih minimal 1 kategori'); return; }
-                
-                const ok = await addPrompt(title, content, selectedCategories);
-                if (ok) {
-                    alert(`BERHASIL! Prompt disimpan dengan panjang: ${content.length} karakter (FULL TEXT TIDAK TERPOTONG)`);
-                    document.getElementById('newTitle').value = '';
-                    contentTextarea.value = '';
-                    selectedCategories = [];
-                    document.querySelectorAll('#catMultiGroup .cat-chip').forEach(ch => ch.classList.remove('selected'));
-                    updateCharCount();
-                    fetchPrompts();
-                } else alert('Gagal simpan. Cek apakah kolom "content" di database bertipe TEXT (bisa sampai 1 juta karakter)');
-            };
-            document.getElementById('logoutAdminBtn').onclick = () => {
-                isAdmin = false;
-                loginSection.style.display = 'block';
-                adminSection.style.display = 'none';
-                fetchPrompts();
-                slideMenu.classList.remove('open');
-            };
-            slideMenu.classList.remove('open');
-            fetchPrompts();
-        } else alert('Key atau password salah');
-    };
-
-    searchInput.addEventListener('input', (e) => { searchTerm = e.target.value; renderPrompts(); });
-    
-    renderFilters();
-    fetchPrompts();
+  setInterval(async () => {
+    await renderGallery();
+  }, 30000);
 </script>
 </body>
-</html>
+    </html>
