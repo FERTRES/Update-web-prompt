@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ARA HOSTING – Image Host</title>
+  <title>ARA HOSTING – Image Host (50x50 Resize)</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
@@ -66,9 +66,21 @@
     .stat-number { font-size: 2rem; font-weight: 700; color: #2554ea; }
     .gallery-title { font-size: 1.3rem; font-weight: 600; margin-bottom: 1rem; }
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1.5rem; }
-    .image-card { background: #0c0f1c; border-radius: 20px; border: 1px solid #2a2c34; overflow: hidden; transition: 0.2s; }
+    .image-card {
+      background: #0c0f1c;
+      border-radius: 20px;
+      border: 1px solid #2a2c34;
+      overflow: hidden;
+      transition: 0.2s;
+    }
     .image-card:hover { border-color: #283dde; transform: translateY(-2px); }
-    .card-img { width: 100%; aspect-ratio: 16/12; object-fit: cover; background: #000; display: block; }
+    .card-img {
+      width: 100%;
+      aspect-ratio: 16/12;
+      object-fit: cover;
+      background: #000;
+      display: block;
+    }
     .card-info { padding: 0.8rem 1rem; }
     .card-name { font-size: 0.75rem; color: #a4a4a4; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .link-btn {
@@ -106,7 +118,7 @@
   <div class="header">
     <div class="logo">
       <h1>ARA HOSTING</h1>
-      <p>unggah gambar · link instan</p>
+      <p>unggah gambar · resize otomatis 50x50</p>
     </div>
     <div class="badge">supabase storage</div>
   </div>
@@ -116,6 +128,7 @@
       <div class="upload-icon">📸</div>
       <p>Seret & lepas gambar di sini</p>
       <p style="color:#a4a4a4; font-size:0.8rem;">atau klik untuk pilih file</p>
+      <p style="color:#2554ea; font-size:0.7rem; margin-top:8px;">otomatis diubah ke ukuran 50x50 pixel</p>
       <input type="file" id="fileInput" class="file-input" accept="image/jpeg,image/png,image/gif,image/webp">
       <div id="previewArea" style="display: none;" class="preview-area">
         <img id="previewImg" class="preview-img">
@@ -127,15 +140,15 @@
   <div class="stats">
     <div class="stat-card"><div class="stat-number" id="totalCount">0</div><div>gambar tersimpan</div></div>
     <div class="stat-card"><div class="stat-number" id="todayCount">0</div><div>upload hari ini</div></div>
-    <div class="stat-card"><div class="stat-number">gratis</div><div>hosting permanen</div></div>
+    <div class="stat-card"><div class="stat-number">50x50</div><div>resize otomatis</div></div>
   </div>
 
-  <div class="gallery-title">Galeri publik</div>
+  <div class="gallery-title">Galeri publik (thumbnail 50x50)</div>
   <div id="galleryGrid" class="grid">
     <div style="grid-column:1/-1; text-align:center; padding:2rem;">memuat gambar...</div>
   </div>
 
-  <footer>ARA HOSTING · gambar tersimpan di Supabase Storage</footer>
+  <footer>ARA HOSTING · semua gambar di-resize ke 50x50 pixel</footer>
 </div>
 
 <div id="toastMsg" class="toast">link disalin</div>
@@ -149,7 +162,7 @@
     const TABLE = "gallery";
 
     let currentFile = null;
-    let objectUrl = null;
+    let previewUrl = null;
 
     function showMessage(msg, isError = false) {
       const toast = document.getElementById("toastMsg");
@@ -159,63 +172,37 @@
       setTimeout(() => toast.style.opacity = "0", 3000);
     }
 
-    // CREATE BUCKET
-    async function createBucketIfNotExists() {
-      const { data: buckets, error: listError } = await supabaseClient.storage.listBuckets();
-      if (listError) {
-        console.error("List bucket error:", listError);
-        showMessage("Gagal cek bucket: " + listError.message, true);
-        return false;
-      }
-      const exists = buckets?.some(b => b.name === BUCKET);
-      if (!exists) {
-        const { error: createError } = await supabaseClient.storage.createBucket(BUCKET, { public: true });
-        if (createError) {
-          console.error("Create bucket error:", createError);
-          showMessage("Gagal buat bucket: " + createError.message, true);
-          return false;
-        }
-        console.log("Bucket created:", BUCKET);
-      }
-      return true;
+    // RESIZE GAMBAR KE 50x50 (Canvas API)
+    function resizeImageTo50x50(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = 50;
+            canvas.height = 50;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, 50, 50);
+            canvas.toBlob((blob) => {
+              const resizedFile = new File([blob], file.name, { type: file.type });
+              resolve(resizedFile);
+            }, file.type);
+          };
+          img.onerror = reject;
+          img.src = e.target.result;
+        };
+        reader.onerror = reject;
+      });
     }
 
-    // CREATE TABLE
-    async function createTableIfNotExists() {
-      const { error: checkError } = await supabaseClient.from(TABLE).select("id").limit(1);
-      if (checkError && checkError.code === "42P01") {
-        const createSQL = `
-          CREATE TABLE gallery (
-            id SERIAL PRIMARY KEY,
-            original_name TEXT,
-            file_path TEXT,
-            size_bytes BIGINT,
-            mime_type TEXT,
-            public_url TEXT,
-            created_at TIMESTAMP DEFAULT now()
-          );
-          ALTER TABLE gallery DISABLE ROW LEVEL SECURITY;
-        `;
-        const { error: execError } = await supabaseClient.rpc('exec_sql', { query: createSQL });
-        if (execError) {
-          console.error("Auto create table failed, please create manually via SQL editor");
-          showMessage("Tabel belum ada, buat manual di SQL Editor Supabase", true);
-          return false;
-        }
-      }
-      return true;
-    }
-
-    // LOAD IMAGES
     async function loadImages() {
       const { data, error } = await supabaseClient
         .from(TABLE)
         .select("*")
         .order("created_at", { ascending: false });
-      if (error) {
-        console.warn(error);
-        return [];
-      }
+      if (error) return [];
       for (let img of data) {
         const { data: { publicUrl } } = supabaseClient.storage.from(BUCKET).getPublicUrl(img.file_path);
         img.public_url = publicUrl;
@@ -240,7 +227,7 @@
         <div class="image-card">
           <img class="card-img" src="${img.public_url}" alt="${img.original_name}" loading="lazy">
           <div class="card-info">
-            <div class="card-name">${escapeHtml(img.original_name.substring(0, 28))}</div>
+            <div class="card-name">${escapeHtml(img.original_name.substring(0, 28))} (50x50)</div>
             <div class="link-btn" onclick="window.copyLink('${img.public_url}')">salin link</div>
           </div>
         </div>
@@ -249,7 +236,7 @@
 
     window.copyLink = (url) => {
       navigator.clipboard.writeText(url);
-      showMessage(`Link disalin: ${url.substring(0, 50)}...`);
+      showMessage(`Link gambar 50x50 disalin: ${url.substring(0, 50)}...`);
     };
 
     function escapeHtml(str) {
@@ -262,35 +249,35 @@
       });
     }
 
-    // UPLOAD
-    async function uploadImage(file) {
-      const ext = file.name.split('.').pop();
+    async function uploadImage(originalFile) {
+      const resizedFile = await resizeImageTo50x50(originalFile);
+      const ext = originalFile.name.split('.').pop();
       const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${ext}`;
       const filePath = `uploads/${fileName}`;
 
       const { error: uploadErr } = await supabaseClient.storage
         .from(BUCKET)
-        .upload(filePath, file, { cacheControl: "3600" });
+        .upload(filePath, resizedFile, { cacheControl: "3600" });
 
       if (uploadErr) {
-        console.error("Upload error:", uploadErr);
-        showMessage("Gagal upload: " + uploadErr.message, true);
+        showMessage("Upload gagal: " + uploadErr.message, true);
         return false;
       }
 
       const { data: { publicUrl } } = supabaseClient.storage.from(BUCKET).getPublicUrl(filePath);
 
       const { error: dbErr } = await supabaseClient.from(TABLE).insert([{
-        original_name: file.name,
+        original_name: originalFile.name,
         file_path: filePath,
-        size_bytes: file.size,
-        mime_type: file.type,
+        size_bytes: resizedFile.size,
+        mime_type: resizedFile.type,
         public_url: publicUrl
       }]);
 
       if (dbErr) {
-        console.error("DB insert error:", dbErr);
-        showMessage("Gambar tersimpan, tapi metadata gagal", true);
+        console.error(dbErr);
+        showMessage("File tersimpan tapi metadata gagal", true);
+        return false;
       }
       return true;
     }
@@ -333,24 +320,25 @@
 
     function handleFile(file) {
       currentFile = file;
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
-      objectUrl = URL.createObjectURL(file);
-      previewImg.src = objectUrl;
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      previewUrl = URL.createObjectURL(file);
+      previewImg.src = previewUrl;
       previewArea.style.display = "flex";
     }
 
     uploadBtn.addEventListener("click", async () => {
       if (!currentFile) return;
       uploadBtn.disabled = true;
-      uploadBtn.innerText = "Mengunggah...";
+      uploadBtn.innerText = "Memproses & mengunggah...";
+      showMessage("Resize ke 50x50, harap tunggu...");
       const ok = await uploadImage(currentFile);
       uploadBtn.disabled = false;
       uploadBtn.innerText = "Unggah sekarang";
       if (ok) {
-        showMessage("Gambar berhasil dihosting");
+        showMessage("Gambar 50x50 berhasil dihosting");
         currentFile = null;
         previewArea.style.display = "none";
-        if (objectUrl) URL.revokeObjectURL(objectUrl);
+        if (previewUrl) URL.revokeObjectURL(previewUrl);
         fileInput.value = "";
         await renderGallery();
       } else {
@@ -358,13 +346,7 @@
       }
     });
 
-    // INIT
-    (async () => {
-      const bucketOk = await createBucketIfNotExists();
-      if (!bucketOk) return;
-      await createTableIfNotExists();
-      await renderGallery();
-    })();
+    renderGallery();
   })();
 </script>
 </body>
