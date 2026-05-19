@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>ARA HOSTING – Image Host</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -253,7 +253,7 @@
   </div>
 
   <div class="upload-card">
-    <div class="drag-zone" id="dragZone">
+    <div id="dragZone" class="drag-zone">
       <div class="upload-icon">📸</div>
       <p>Seret & lepas gambar di sini</p>
       <p style="color:#a4a4a4; font-size:0.8rem;">atau klik untuk pilih file</p>
@@ -282,193 +282,213 @@
 <div id="toastMsg" class="toast">link disalin</div>
 
 <script>
-  // ========== SUPABASE ==========
-  const SUPABASE_URL = "https://qawcresnwfmwuuzevjgm.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhd2NyZXNud2Ztd3V1emV2amdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxODk0OTYsImV4cCI6MjA5NDc2NTQ5Nn0.n7yx0_KY1JRiu3P1xEB2CM3UrPWwNP9ybf_8TazpJDo";
-  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  const BUCKET = "ara_images";
-  const TABLE = "gallery";
+  (function() {
+    // ========== SUPABASE ==========
+    const SUPABASE_URL = "https://qawcresnwfmwuuzevjgm.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhd2NyZXNud2Ztd3V1emV2amdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxODk0OTYsImV4cCI6MjA5NDc2NTQ5Nn0.n7yx0_KY1JRiu3P1xEB2CM3UrPWwNP9ybf_8TazpJDo";
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const BUCKET = "ara_images";
+    const TABLE = "gallery";
 
-  let currentFile = null;
-  let objectUrl = null;
+    let currentFile = null;
+    let objectUrl = null;
 
-  // ========== helper ==========
-  function showMessage(msg, isError = false) {
-    const toast = document.getElementById("toastMsg");
-    toast.style.backgroundColor = isError ? "#aa2e4e" : "#283dde";
-    toast.textContent = msg;
-    toast.style.opacity = "1";
-    setTimeout(() => toast.style.opacity = "0", 2500);
-  }
-
-  // ========== setup bucket & table ==========
-  async function setupStorage() {
-    const { data: buckets } = await supabase.storage.listBuckets();
-    const exists = buckets?.some(b => b.name === BUCKET);
-    if (!exists) {
-      await supabase.storage.createBucket(BUCKET, { public: true });
+    // ========== helper ==========
+    function showMessage(msg, isError = false) {
+      const toast = document.getElementById("toastMsg");
+      toast.style.backgroundColor = isError ? "#aa2e4e" : "#283dde";
+      toast.textContent = msg;
+      toast.style.opacity = "1";
+      setTimeout(() => toast.style.opacity = "0", 2500);
     }
-  }
 
-  async function setupTable() {
-    const { error } = await supabase.from(TABLE).select("id").limit(1);
-    if (error && error.code === "42P01") {
-      showMessage("Tabel belum ada, akan dibuat otomatis oleh sistem", false);
+    // ========== setup bucket & table ==========
+    async function setupStorage() {
+      const { data: buckets } = await supabaseClient.storage.listBuckets();
+      const exists = buckets?.some(b => b.name === BUCKET);
+      if (!exists) {
+        await supabaseClient.storage.createBucket(BUCKET, { public: true });
+      }
     }
-  }
 
-  // ========== ambil semua gambar ==========
-  async function loadImages() {
-    const { data, error } = await supabase
-      .from(TABLE)
-      .select("*")
-      .order("created_at", { ascending: false });
-    if (error) return [];
-    for (let img of data) {
-      const { data: { publicUrl } } = supabase.storage.from(BUCKET).getPublicUrl(img.file_path);
-      img.public_url = publicUrl;
+    // ========== ambil semua gambar ==========
+    async function loadImages() {
+      const { data, error } = await supabaseClient
+        .from(TABLE)
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) {
+        console.warn(error);
+        return [];
+      }
+      for (let img of data) {
+        const { data: { publicUrl } } = supabaseClient.storage.from(BUCKET).getPublicUrl(img.file_path);
+        img.public_url = publicUrl;
+      }
+      return data;
     }
-    return data;
-  }
 
-  async function renderGallery() {
-    const images = await loadImages();
-    const total = images.length;
-    const today = new Date().toISOString().slice(0,10);
-    const todayCount = images.filter(i => i.created_at?.startsWith(today)).length;
-    document.getElementById("totalCount").innerText = total;
-    document.getElementById("todayCount").innerText = todayCount;
+    async function renderGallery() {
+      const images = await loadImages();
+      const total = images.length;
+      const today = new Date().toISOString().slice(0,10);
+      const todayCount = images.filter(i => i.created_at?.startsWith(today)).length;
+      document.getElementById("totalCount").innerText = total;
+      document.getElementById("todayCount").innerText = todayCount;
 
-    const grid = document.getElementById("galleryGrid");
-    if (images.length === 0) {
-      grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:2rem; color:#a4a4a4;">Belum ada gambar. Seret file ke area unggah.</div>';
+      const grid = document.getElementById("galleryGrid");
+      if (images.length === 0) {
+        grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:2rem; color:#a4a4a4;">Belum ada gambar. Seret file ke area unggah.</div>';
+        return;
+      }
+
+      grid.innerHTML = images.map(img => `
+        <div class="image-card">
+          <img class="card-img" src="${img.public_url}" alt="${img.original_name}" loading="lazy">
+          <div class="card-info">
+            <div class="card-name">${escapeHtml(img.original_name.substring(0, 28))}</div>
+            <div class="link-btn" onclick="window.copyLink('${img.public_url}')">salin link</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    window.copyLink = (url) => {
+      navigator.clipboard.writeText(url);
+      showMessage(`Link disalin: ${url.substring(0, 50)}...`);
+    };
+
+    function escapeHtml(str) {
+      if (!str) return "";
+      return str.replace(/[&<>]/g, function(m) {
+        if (m === "&") return "&amp;";
+        if (m === "<") return "&lt;";
+        if (m === ">") return "&gt;";
+        return m;
+      });
+    }
+
+    // ========== upload ==========
+    async function uploadImage(file) {
+      const ext = file.name.split('.').pop();
+      const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${ext}`;
+      const filePath = `uploads/${fileName}`;
+
+      const { error: uploadErr } = await supabaseClient.storage
+        .from(BUCKET)
+        .upload(filePath, file, { cacheControl: "3600" });
+
+      if (uploadErr) {
+        showMessage("Gagal upload: " + uploadErr.message, true);
+        return false;
+      }
+
+      const { data: { publicUrl } } = supabaseClient.storage.from(BUCKET).getPublicUrl(filePath);
+
+      const { error: dbErr } = await supabaseClient.from(TABLE).insert([{
+        original_name: file.name,
+        file_path: filePath,
+        size_bytes: file.size,
+        mime_type: file.type,
+        public_url: publicUrl
+      }]);
+
+      if (dbErr) {
+        console.error(dbErr);
+        showMessage("Gambar tersimpan, tapi metadata gagal", true);
+      }
+      return true;
+    }
+
+    // ========== UI DRAG & DROP (paling stabil) ==========
+    const dragZone = document.getElementById("dragZone");
+    const fileInput = document.getElementById("fileInput");
+    const previewArea = document.getElementById("previewArea");
+    const previewImg = document.getElementById("previewImg");
+    const uploadBtn = document.getElementById("uploadBtn");
+
+    if (!dragZone) {
+      console.error("dragZone element not found");
       return;
     }
 
-    grid.innerHTML = images.map(img => `
-      <div class="image-card">
-        <img class="card-img" src="${img.public_url}" alt="${img.original_name}" loading="lazy">
-        <div class="card-info">
-          <div class="card-name">${escapeHtml(img.original_name.substring(0, 28))}</div>
-          <div class="link-btn" onclick="copyLink('${img.public_url}')">salin link</div>
-        </div>
-      </div>
-    `).join('');
-  }
-
-  window.copyLink = (url) => {
-    navigator.clipboard.writeText(url);
-    showMessage(`Link disalin: ${url.substring(0, 50)}...`);
-  };
-
-  function escapeHtml(str) {
-    if (!str) return "";
-    return str.replace(/[&<>]/g, function(m) {
-      if (m === "&") return "&amp;";
-      if (m === "<") return "&lt;";
-      if (m === ">") return "&gt;";
-      return m;
+    // klik untuk pilih file
+    dragZone.addEventListener("click", (e) => {
+      if (e.target === uploadBtn || (uploadBtn && uploadBtn.contains(e.target))) return;
+      fileInput.click();
     });
-  }
 
-  // ========== upload ==========
-  async function uploadImage(file) {
-    const ext = file.name.split('.').pop();
-    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${ext}`;
-    const filePath = `uploads/${fileName}`;
+    // drag over
+    dragZone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dragZone.classList.add("drag-over");
+    });
 
-    const { error: uploadErr } = await supabase.storage
-      .from(BUCKET)
-      .upload(filePath, file, { cacheControl: "3600" });
+    dragZone.addEventListener("dragleave", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dragZone.classList.remove("drag-over");
+    });
 
-    if (uploadErr) {
-      showMessage("Gagal upload: " + uploadErr.message, true);
-      return false;
-    }
+    // drag drop
+    dragZone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dragZone.classList.remove("drag-over");
+      
+      const files = e.dataTransfer.files;
+      if (files.length > 0 && files[0].type.startsWith("image/")) {
+        handleFile(files[0]);
+      } else {
+        showMessage("Hanya file gambar yang didukung", true);
+      }
+    });
 
-    const { data: { publicUrl } } = supabase.storage.from(BUCKET).getPublicUrl(filePath);
+    fileInput.addEventListener("change", (e) => {
+      if (e.target.files.length > 0) {
+        handleFile(e.target.files[0]);
+      }
+    });
 
-    const { error: dbErr } = await supabase.from(TABLE).insert([{
-      original_name: file.name,
-      file_path: filePath,
-      size_bytes: file.size,
-      mime_type: file.type,
-      public_url: publicUrl
-    }]);
-
-    if (dbErr) {
-      console.error(dbErr);
-      showMessage("Gambar tersimpan, tapi metadata gagal", true);
-    }
-    return true;
-  }
-
-  // ========== UI DRAG & DROP ==========
-  const dragZone = document.getElementById("dragZone");
-  const fileInput = document.getElementById("fileInput");
-  const previewArea = document.getElementById("previewArea");
-  const previewImg = document.getElementById("previewImg");
-  const uploadBtn = document.getElementById("uploadBtn");
-
-  dragZone.addEventListener("click", () => fileInput.click());
-
-  dragZone.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    dragZone.classList.add("drag-over");
-  });
-
-  dragZone.addEventListener("dragleave", () => {
-    dragZone.classList.remove("drag-over");
-  });
-
-  dragZone.addEventListener("drop", async (e) => {
-    e.preventDefault();
-    dragZone.classList.remove("drag-over");
-    const files = e.dataTransfer.files;
-    if (files.length && files[0].type.startsWith("image/")) {
-      handleFile(files[0]);
-    } else {
-      showMessage("Hanya file gambar yang didukung", true);
-    }
-  });
-
-  fileInput.addEventListener("change", (e) => {
-    if (e.target.files.length) handleFile(e.target.files[0]);
-  });
-
-  function handleFile(file) {
-    currentFile = file;
-    if (objectUrl) URL.revokeObjectURL(objectUrl);
-    objectUrl = URL.createObjectURL(file);
-    previewImg.src = objectUrl;
-    previewArea.style.display = "flex";
-  }
-
-  uploadBtn.addEventListener("click", async () => {
-    if (!currentFile) return;
-    uploadBtn.disabled = true;
-    uploadBtn.innerText = "Mengunggah...";
-    const ok = await uploadImage(currentFile);
-    uploadBtn.disabled = false;
-    uploadBtn.innerText = "Unggah sekarang";
-    if (ok) {
-      showMessage("Gambar berhasil dihosting");
-      currentFile = null;
-      previewArea.style.display = "none";
+    function handleFile(file) {
+      currentFile = file;
       if (objectUrl) URL.revokeObjectURL(objectUrl);
-      fileInput.value = "";
-      await renderGallery();
-    } else {
-      showMessage("Upload gagal, coba lagi", true);
+      objectUrl = URL.createObjectURL(file);
+      previewImg.src = objectUrl;
+      previewArea.style.display = "flex";
     }
-  });
 
-  // ========== INIT ==========
-  (async () => {
-    await setupStorage();
-    await setupTable();
-    await renderGallery();
+    uploadBtn.addEventListener("click", async () => {
+      if (!currentFile) return;
+      uploadBtn.disabled = true;
+      uploadBtn.innerText = "Mengunggah...";
+      const ok = await uploadImage(currentFile);
+      uploadBtn.disabled = false;
+      uploadBtn.innerText = "Unggah sekarang";
+      if (ok) {
+        showMessage("Gambar berhasil dihosting");
+        currentFile = null;
+        previewArea.style.display = "none";
+        if (objectUrl) URL.revokeObjectURL(objectUrl);
+        fileInput.value = "";
+        await renderGallery();
+      } else {
+        showMessage("Upload gagal, coba lagi", true);
+      }
+    });
+
+    // ========== INIT ==========
+    (async () => {
+      try {
+        await setupStorage();
+        await renderGallery();
+      } catch (err) {
+        console.error(err);
+        showMessage("Gagal konek ke Supabase, cek console", true);
+      }
+    })();
   })();
 </script>
 </body>
-  </html>
+</html>
