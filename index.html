@@ -2,9 +2,9 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>ARA HOSTING – Modern Image Host</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARA HOSTING – Image Host</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     * {
@@ -17,22 +17,10 @@
       background: #000000;
       font-family: 'Inter', sans-serif;
       color: #eef2ff;
-      line-height: 1.5;
-    }
-
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #000000;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #283dde;
-      border-radius: 20px;
     }
 
     .app {
-      max-width: 1300px;
+      max-width: 1200px;
       margin: 0 auto;
       padding: 2rem 1.5rem;
     }
@@ -43,9 +31,9 @@
       align-items: center;
       flex-wrap: wrap;
       gap: 1rem;
-      margin-bottom: 2.5rem;
+      margin-bottom: 2rem;
       border-bottom: 1px solid #3f4043;
-      padding-bottom: 1.2rem;
+      padding-bottom: 1rem;
     }
 
     .logo h1 {
@@ -55,13 +43,11 @@
       background-clip: text;
       -webkit-background-clip: text;
       color: transparent;
-      letter-spacing: -0.3px;
     }
 
     .logo p {
       color: #a4a4a4;
       font-size: 0.85rem;
-      margin-top: 4px;
     }
 
     .badge {
@@ -69,7 +55,6 @@
       padding: 6px 14px;
       border-radius: 40px;
       font-size: 0.8rem;
-      font-weight: 500;
       color: white;
     }
 
@@ -77,34 +62,28 @@
       background: #0c0f1c;
       border-radius: 28px;
       padding: 2rem;
-      margin-bottom: 2.8rem;
+      margin-bottom: 2rem;
       border: 1px solid #3f4043;
-      box-shadow: 0 20px 35px -12px rgba(0,0,0,0.5);
     }
 
     .drag-zone {
       border: 2px dashed #3f4043;
       border-radius: 20px;
-      padding: 2.5rem 2rem;
+      padding: 2.5rem;
       text-align: center;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: 0.2s;
       background: #05070f;
     }
 
-    .drag-zone:hover {
+    .drag-zone.drag-over {
       border-color: #283dde;
       background: #0a0e1a;
     }
 
-    .drag-zone.active {
-      border-color: #2554ea;
-      background: #0f1428;
-    }
-
     .upload-icon {
-      font-size: 3rem;
-      margin-bottom: 0.8rem;
+      font-size: 2.8rem;
+      margin-bottom: 0.5rem;
       color: #a4a4a4;
     }
 
@@ -112,8 +91,8 @@
       display: none;
     }
 
-    .upload-preview {
-      margin-top: 1.2rem;
+    .preview-area {
+      margin-top: 1.5rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -138,30 +117,18 @@
       color: white;
       cursor: pointer;
       transition: 0.2s;
-      font-size: 0.9rem;
-      box-shadow: 0 2px 8px rgba(40,61,222,0.2);
     }
 
     .btn-primary:hover {
       background: #2554ea;
-      transform: scale(1.01);
     }
 
-    .btn-outline {
-      background: transparent;
-      border: 1px solid #3f4043;
-      padding: 10px 22px;
-      border-radius: 40px;
-      color: #eef2ff;
-      cursor: pointer;
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
-    .btn-outline:hover {
-      border-color: #283dde;
-      color: white;
-    }
-
-    .stats-row {
+    .stats {
       display: flex;
       gap: 1.5rem;
       margin-bottom: 2rem;
@@ -170,11 +137,10 @@
 
     .stat-card {
       background: #0a0d18;
-      border-radius: 24px;
-      padding: 1rem 1.6rem;
+      border-radius: 20px;
+      padding: 1rem 1.5rem;
       border: 1px solid #2a2c34;
       flex: 1;
-      min-width: 130px;
     }
 
     .stat-number {
@@ -184,19 +150,15 @@
     }
 
     .gallery-title {
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       font-weight: 600;
       margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
     }
 
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
       gap: 1.5rem;
-      margin-top: 0.5rem;
     }
 
     .image-card {
@@ -209,7 +171,7 @@
 
     .image-card:hover {
       border-color: #283dde;
-      transform: translateY(-3px);
+      transform: translateY(-2px);
     }
 
     .card-img {
@@ -221,63 +183,60 @@
     }
 
     .card-info {
-      padding: 0.9rem 1rem 1rem;
+      padding: 0.8rem 1rem;
     }
 
-    .card-title {
-      font-weight: 500;
-      font-size: 0.8rem;
+    .card-name {
+      font-size: 0.75rem;
+      color: #a4a4a4;
+      margin-bottom: 6px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      color: #a4a4a4;
-      margin-bottom: 6px;
     }
 
-    .link-badge {
+    .link-btn {
       background: #000000;
       border: 1px solid #283dde;
       border-radius: 40px;
-      padding: 4px 10px;
+      padding: 4px 12px;
       font-size: 0.7rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
       cursor: pointer;
+      display: inline-block;
     }
 
-    .link-badge:hover {
+    .link-btn:hover {
       background: #052794;
       color: white;
     }
 
-    .toast-msg {
+    .toast {
       position: fixed;
       bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
       background: #283dde;
       color: white;
-      padding: 10px 22px;
+      padding: 10px 24px;
       border-radius: 60px;
       font-size: 0.8rem;
-      z-index: 1000;
-      pointer-events: none;
       opacity: 0;
       transition: opacity 0.2s;
+      pointer-events: none;
+      z-index: 1000;
     }
 
     footer {
-      margin-top: 3rem;
+      margin-top: 2.5rem;
       text-align: center;
       color: #5b5d6b;
       font-size: 0.75rem;
       border-top: 1px solid #20222b;
-      padding-top: 2rem;
+      padding-top: 1.5rem;
     }
 
     @media (max-width: 640px) {
-      .app { padding: 1.5rem; }
+      .app { padding: 1rem; }
       .grid { grid-template-columns: 1fr 1fr; }
     }
   </style>
@@ -288,212 +247,228 @@
   <div class="header">
     <div class="logo">
       <h1>ARA HOSTING</h1>
-      <p>unggah gambar · link instan · modern</p>
+      <p>unggah gambar · link instan</p>
     </div>
-    <div class="badge">powered by Supabase</div>
+    <div class="badge">supabase storage</div>
   </div>
 
   <div class="upload-card">
     <div class="drag-zone" id="dragZone">
-      <div class="upload-icon">∆</div>
-      <p style="margin-bottom: 8px;">Seret & lepas gambar di sini</p>
+      <div class="upload-icon">📸</div>
+      <p>Seret & lepas gambar di sini</p>
       <p style="color:#a4a4a4; font-size:0.8rem;">atau klik untuk pilih file</p>
-      <input type="file" id="fileInput" class="file-input" accept="image/*">
-      <div class="upload-preview" id="previewContainer" style="display: none;">
-        <img id="previewImg" class="preview-img" alt="preview">
+      <input type="file" id="fileInput" class="file-input" accept="image/jpeg,image/png,image/gif,image/webp">
+      <div id="previewArea" style="display: none;" class="preview-area">
+        <img id="previewImg" class="preview-img">
         <button id="uploadBtn" class="btn-primary">Unggah sekarang</button>
       </div>
     </div>
   </div>
 
-  <div class="stats-row">
-    <div class="stat-card"><div class="stat-number" id="totalImages">0</div><div>gambar tersimpan</div></div>
-    <div class="stat-card"><div class="stat-number" id="todayUploads">0</div><div>upload hari ini</div></div>
-    <div class="stat-card"><div class="stat-number">hosting</div><div>gratis permanen</div></div>
+  <div class="stats">
+    <div class="stat-card"><div class="stat-number" id="totalCount">0</div><div>gambar tersimpan</div></div>
+    <div class="stat-card"><div class="stat-number" id="todayCount">0</div><div>upload hari ini</div></div>
+    <div class="stat-card"><div class="stat-number">gratis</div><div>hosting permanen</div></div>
   </div>
 
-  <div class="gallery-title">
-    <span>Galeri publik</span>
-    <span style="font-size:0.7rem; background:#05279420; padding:2px 8px; border-radius:40px;">auto update</span>
-  </div>
+  <div class="gallery-title">Galeri publik</div>
   <div id="galleryGrid" class="grid">
-    <div style="grid-column:1/-1; text-align:center; padding:3rem; color:#6e6f7e;">memuat gambar...</div>
+    <div style="grid-column:1/-1; text-align:center; padding:2rem;">memuat gambar...</div>
   </div>
-  <footer>
-    ARA HOSTING – modern image hosting • file permanen hingga dihapus via dashboard
-  </footer>
+
+  <footer>ARA HOSTING · gambar tersimpan di Supabase Storage</footer>
 </div>
 
-<div id="toastMsg" class="toast-msg">link disalin</div>
+<div id="toastMsg" class="toast">link disalin</div>
 
 <script>
+  // ========== SUPABASE ==========
   const SUPABASE_URL = "https://qawcresnwfmwuuzevjgm.supabase.co";
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhd2NyZXNud2Ztd3V1emV2amdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxODk0OTYsImV4cCI6MjA5NDc2NTQ5Nn0.n7yx0_KY1JRiu3P1xEB2CM3UrPWwNP9ybf_8TazpJDo";
   const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  const BUCKET_NAME = 'ara_images';
-  const TABLE_NAME = 'gallery';
+  const BUCKET = "ara_images";
+  const TABLE = "gallery";
 
   let currentFile = null;
-  let previewUrl = null;
+  let objectUrl = null;
 
-  function showToast(msg, isError = false) {
-    const toast = document.getElementById('toastMsg');
-    toast.style.backgroundColor = isError ? '#aa2e4e' : '#283dde';
+  // ========== helper ==========
+  function showMessage(msg, isError = false) {
+    const toast = document.getElementById("toastMsg");
+    toast.style.backgroundColor = isError ? "#aa2e4e" : "#283dde";
     toast.textContent = msg;
-    toast.style.opacity = '1';
-    setTimeout(() => toast.style.opacity = '0', 2400);
+    toast.style.opacity = "1";
+    setTimeout(() => toast.style.opacity = "0", 2500);
   }
 
-  async function ensureBucketAndTable() {
+  // ========== setup bucket & table ==========
+  async function setupStorage() {
     const { data: buckets } = await supabase.storage.listBuckets();
-    const bucketExists = buckets?.some(b => b.name === BUCKET_NAME);
-    if (!bucketExists) {
-      await supabase.storage.createBucket(BUCKET_NAME, { public: true });
+    const exists = buckets?.some(b => b.name === BUCKET);
+    if (!exists) {
+      await supabase.storage.createBucket(BUCKET, { public: true });
     }
   }
 
-  async function fetchGallery() {
-    const { data: images, error } = await supabase
-      .from(TABLE_NAME)
-      .select('*')
-      .order('created_at', { ascending: false });
+  async function setupTable() {
+    const { error } = await supabase.from(TABLE).select("id").limit(1);
+    if (error && error.code === "42P01") {
+      showMessage("Tabel belum ada, akan dibuat otomatis oleh sistem", false);
+    }
+  }
+
+  // ========== ambil semua gambar ==========
+  async function loadImages() {
+    const { data, error } = await supabase
+      .from(TABLE)
+      .select("*")
+      .order("created_at", { ascending: false });
     if (error) return [];
-    for (let img of images) {
-      const { data: { publicUrl } } = supabase.storage.from(BUCKET_NAME).getPublicUrl(img.file_path);
+    for (let img of data) {
+      const { data: { publicUrl } } = supabase.storage.from(BUCKET).getPublicUrl(img.file_path);
       img.public_url = publicUrl;
     }
-    return images || [];
+    return data;
   }
 
   async function renderGallery() {
-    const images = await fetchGallery();
+    const images = await loadImages();
     const total = images.length;
-    document.getElementById('totalImages').innerText = total;
     const today = new Date().toISOString().slice(0,10);
-    const todayUploads = images.filter(img => img.created_at?.startsWith(today)).length;
-    document.getElementById('todayUploads').innerText = todayUploads;
+    const todayCount = images.filter(i => i.created_at?.startsWith(today)).length;
+    document.getElementById("totalCount").innerText = total;
+    document.getElementById("todayCount").innerText = todayCount;
 
-    const grid = document.getElementById('galleryGrid');
-    if (!images.length) {
-      grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:2rem; color:#6a6c7e;">belum ada gambar, unggah foto pertama</div>';
+    const grid = document.getElementById("galleryGrid");
+    if (images.length === 0) {
+      grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:2rem; color:#a4a4a4;">Belum ada gambar. Seret file ke area unggah.</div>';
       return;
     }
+
     grid.innerHTML = images.map(img => `
       <div class="image-card">
-        <img class="card-img" src="${img.public_url}" alt="${img.original_name}" loading="lazy" />
+        <img class="card-img" src="${img.public_url}" alt="${img.original_name}" loading="lazy">
         <div class="card-info">
-          <div class="card-title">${escapeHtml(img.original_name.substring(0, 28))}</div>
-          <div class="link-badge" onclick="copyToClipboard('${img.public_url}')">salin link</div>
+          <div class="card-name">${escapeHtml(img.original_name.substring(0, 28))}</div>
+          <div class="link-btn" onclick="copyLink('${img.public_url}')">salin link</div>
         </div>
       </div>
     `).join('');
   }
 
-  window.copyToClipboard = (url) => {
+  window.copyLink = (url) => {
     navigator.clipboard.writeText(url);
-    showToast(`link disalin: ${url.substring(0, 45)}...`);
+    showMessage(`Link disalin: ${url.substring(0, 50)}...`);
   };
 
   function escapeHtml(str) {
-    if (!str) return '';
+    if (!str) return "";
     return str.replace(/[&<>]/g, function(m) {
-      if (m === '&') return '&amp;';
-      if (m === '<') return '&lt;';
-      if (m === '>') return '&gt;';
+      if (m === "&") return "&amp;";
+      if (m === "<") return "&lt;";
+      if (m === ">") return "&gt;";
       return m;
     });
   }
 
+  // ========== upload ==========
   async function uploadImage(file) {
-    if (!file) return false;
     const ext = file.name.split('.').pop();
-    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 10)}.${ext}`;
-    const filePath = `public/${fileName}`;
+    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${ext}`;
+    const filePath = `uploads/${fileName}`;
 
     const { error: uploadErr } = await supabase.storage
-      .from(BUCKET_NAME)
-      .upload(filePath, file, { cacheControl: '3600', upsert: false });
+      .from(BUCKET)
+      .upload(filePath, file, { cacheControl: "3600" });
+
     if (uploadErr) {
-      showToast(`gagal upload: ${uploadErr.message}`, true);
+      showMessage("Gagal upload: " + uploadErr.message, true);
       return false;
     }
-    const { data: { publicUrl } } = supabase.storage.from(BUCKET_NAME).getPublicUrl(filePath);
-    const { error: dbError } = await supabase
-      .from(TABLE_NAME)
-      .insert([{
-        original_name: file.name,
-        file_path: filePath,
-        size_bytes: file.size,
-        mime_type: file.type,
-        public_url: publicUrl
-      }]);
-    if (dbError) console.error(dbError);
+
+    const { data: { publicUrl } } = supabase.storage.from(BUCKET).getPublicUrl(filePath);
+
+    const { error: dbErr } = await supabase.from(TABLE).insert([{
+      original_name: file.name,
+      file_path: filePath,
+      size_bytes: file.size,
+      mime_type: file.type,
+      public_url: publicUrl
+    }]);
+
+    if (dbErr) {
+      console.error(dbErr);
+      showMessage("Gambar tersimpan, tapi metadata gagal", true);
+    }
     return true;
   }
 
-  const dragZone = document.getElementById('dragZone');
-  const fileInput = document.getElementById('fileInput');
-  const previewContainer = document.getElementById('previewContainer');
-  const previewImg = document.getElementById('previewImg');
-  const uploadBtn = document.getElementById('uploadBtn');
+  // ========== UI DRAG & DROP ==========
+  const dragZone = document.getElementById("dragZone");
+  const fileInput = document.getElementById("fileInput");
+  const previewArea = document.getElementById("previewArea");
+  const previewImg = document.getElementById("previewImg");
+  const uploadBtn = document.getElementById("uploadBtn");
 
-  dragZone.addEventListener('click', () => fileInput.click());
-  dragZone.addEventListener('dragover', (e) => {
+  dragZone.addEventListener("click", () => fileInput.click());
+
+  dragZone.addEventListener("dragover", (e) => {
     e.preventDefault();
-    dragZone.classList.add('active');
+    dragZone.classList.add("drag-over");
   });
-  dragZone.addEventListener('dragleave', () => dragZone.classList.remove('active'));
-  dragZone.addEventListener('drop', async (e) => {
+
+  dragZone.addEventListener("dragleave", () => {
+    dragZone.classList.remove("drag-over");
+  });
+
+  dragZone.addEventListener("drop", async (e) => {
     e.preventDefault();
-    dragZone.classList.remove('active');
+    dragZone.classList.remove("drag-over");
     const files = e.dataTransfer.files;
-    if (files.length && files[0].type.startsWith('image/')) {
+    if (files.length && files[0].type.startsWith("image/")) {
       handleFile(files[0]);
     } else {
-      showToast('hanya file gambar yang didukung', true);
+      showMessage("Hanya file gambar yang didukung", true);
     }
   });
 
-  fileInput.addEventListener('change', (e) => {
+  fileInput.addEventListener("change", (e) => {
     if (e.target.files.length) handleFile(e.target.files[0]);
   });
 
   function handleFile(file) {
     currentFile = file;
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
-    previewUrl = URL.createObjectURL(file);
-    previewImg.src = previewUrl;
-    previewContainer.style.display = 'flex';
-    dragZone.style.borderColor = '#283dde';
+    if (objectUrl) URL.revokeObjectURL(objectUrl);
+    objectUrl = URL.createObjectURL(file);
+    previewImg.src = objectUrl;
+    previewArea.style.display = "flex";
   }
 
-  uploadBtn.addEventListener('click', async () => {
+  uploadBtn.addEventListener("click", async () => {
     if (!currentFile) return;
     uploadBtn.disabled = true;
-    uploadBtn.innerText = 'mengunggah...';
+    uploadBtn.innerText = "Mengunggah...";
     const ok = await uploadImage(currentFile);
     uploadBtn.disabled = false;
-    uploadBtn.innerText = 'Unggah sekarang';
+    uploadBtn.innerText = "Unggah sekarang";
     if (ok) {
-      showToast('gambar berhasil dihosting');
+      showMessage("Gambar berhasil dihosting");
       currentFile = null;
-      previewContainer.style.display = 'none';
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-      fileInput.value = '';
+      previewArea.style.display = "none";
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+      fileInput.value = "";
       await renderGallery();
     } else {
-      showToast('upload gagal, coba lagi', true);
+      showMessage("Upload gagal, coba lagi", true);
     }
   });
 
+  // ========== INIT ==========
   (async () => {
-    await ensureBucketAndTable();
+    await setupStorage();
+    await setupTable();
     await renderGallery();
   })();
-
-  setInterval(async () => {
-    await renderGallery();
-  }, 30000);
 </script>
 </body>
-    </html>
+  </html>
